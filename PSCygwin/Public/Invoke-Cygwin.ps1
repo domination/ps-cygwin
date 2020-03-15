@@ -29,7 +29,7 @@ function Invoke-Cygwin
         [scriptblock] $Script,
 
         [Parameter()]
-        [Cygwin.InstallInfo]$CygwinEnvironment
+        [Cygwin.InstallInfo] $CygwinEnvironment
     )
 
     begin

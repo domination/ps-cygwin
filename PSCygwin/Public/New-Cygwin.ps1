@@ -22,7 +22,7 @@
 #>
 function New-Cygwin
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param (
         [Parameter()]
         [string] $Path,
@@ -51,13 +51,18 @@ function New-Cygwin
 
         # Parameter help description
         [Parameter()]
-        [switch] $ForceDownload
+        [switch] $ForceDownload,
+
+        # Parameter help description
+        [Parameter()]
+        [switch] $AsAdministrator
     )
 
     begin
     {
         $SetupFileName = $SetupBaseFileName -f $Architecture;
         $LocalSetupPath = Join-Path -Path $Script:PSModuleLocalTemp -ChildPath $SetupFileName;
+
         if (Test-Path -Path $LocalSetupPath -PathType Leaf)
         {
             Write-Verbose -Message ('Local setup file exists [{0}]' -f $LocalSetupPath);
@@ -67,7 +72,11 @@ function New-Cygwin
         {
             $DownloadUri = [uri]::new($SetupBaseUrl, $SetupFileName);
             Write-Verbose -Message ('Setup file will be downloaded from [{0}] and save as [{1}]' -f $DownloadUri, $LocalSetupPath);
-            Invoke-WebRequest -Uri $DownloadUri -DisableKeepAlive -OutFile $LocalSetupPath
+
+            if ($PSCmdlet.ShouldProcess($LocalSetupPath, ('Download from {0}' -f $DownloadUri)))
+            {
+                Invoke-WebRequest -Uri $DownloadUri -DisableKeepAlive -OutFile $LocalSetupPath
+            }
         }
     }
 
@@ -77,14 +86,26 @@ function New-Cygwin
 
         $parameters = @(
             '--arch', $Architecture,
-            '--no-admin',
             '--no-shortcuts',
             '--quiet-mode'
         );
 
+        if (-not($AsAdministrator))
+        {
+            $parameters += @('--no-admin');
+        }
+
         if (-not([string]::IsNullOrEmpty($Path)))
         {
             $parameters += @('--root', $Path);
+        }
+        else
+        {
+            $lastPath = Get-Cygwin | Where-Object { $_.Registry.Name -eq 'rootdir' } | Select-Object -ExpandProperty Path;
+            if ($null -ne $lastPath)
+            {
+                $parameters += @('--root', $lastPath);
+            }
         }
 
         if (-not([string]::IsNullOrEmpty($LocalPackageRepository)))
@@ -92,7 +113,7 @@ function New-Cygwin
             $parameters += @('--local-package-dir', $LocalPackageRepository);
         }
 
-        if ($MirrorSite.Count -gt 0)
+        if (($null -ne $MirrorSite) -and ($MirrorSite.Count -gt 0))
         {
             $parameters += @('--only-site', '--site', ($MirrorSite -join ','));
         }
@@ -102,7 +123,17 @@ function New-Cygwin
             $parameters += @('--packages', ($Packages -join ','));
         }
 
-        . $LocalSetupPath @parameters 2>&1 | Out-String
+        Write-Verbose ('command line options: {0}' -f ($parameters -join ' '));
+
+        if ($PSCmdlet.ShouldProcess(('{0}' -f $LocalSetupPath), 'Run Cygwin installer'))
+        {
+            # & $LocalSetupPath @parameters 2>&1 | Out-String;
+            Start-Process -FilePath $LocalSetupPath -Args $parameters -WindowStyle Hidden -Wait;
+        }
+        else
+        {
+            Write-Host ('To install run: {0} {1}' -f $LocalSetupPath, ($parameters -join ' '));
+        }
     }
 
     end

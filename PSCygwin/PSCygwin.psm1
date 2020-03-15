@@ -23,6 +23,4 @@ $public | ForEach-Object {
     Import-Module $_ -ErrorAction Stop
 }
 
-# $PSCmdlet.ThrowTerminatingError("[$($_.FullName)]")
-# Export-ModuleMember -Function $public.Basename
 # Update-FormatData -Prepend (Join-Path $PSScriptRoot '*.ps1xml')

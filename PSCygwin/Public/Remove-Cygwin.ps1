@@ -22,19 +22,46 @@
 #>
 function Remove-Cygwin
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param (
+        [Parameter(ValueFromPipeline = $true, Mandatory = $true)]
+        [ValidateNotNull()]
+        [Cygwin.InstallInfo] $CygwinEnvironment
     )
-
-    begin
-    {
-    }
 
     process
     {
-    }
+        Write-Verbose ($CygwinEnvironment | Format-List * | Out-String);
 
-    end
-    {
+        if (-not($CygwinEnvironment.Exists))
+        {
+            Write-Warning ('Seems that directory [{0}] is already deleted.' -f $CygwinEnvironment.Path);
+        }
+
+        if (Test-Path -Path $CygwinEnvironment.Path -PathType Container)
+        {
+            if ($PSCmdlet.ShouldProcess(('{0}' -f $CygwinEnvironment.Path), 'Remove'))
+            {
+                Remove-Item -Path $CygwinEnvironment.Path -Recurse;
+            }
+            else
+            {
+                Write-Host ('Remove: [{0}]' -f $CygwinEnvironment.Path);
+            }
+        }
+
+        $registryItemPath = $CygwinEnvironment.Registry.Path -replace '^HKEY_CURRENT_USER', 'HKCU:' -replace '^HKEY_LOCAL_MACHINE', 'HKLM:';
+        $registryItem = Get-ItemProperty -Path $registryItemPath -Name $CygwinEnvironment.Registry.Name -ErrorAction SilentlyContinue;
+        if ($null -ne $registryItem)
+        {
+            if ($PSCmdlet.ShouldProcess(('{0}\{1}' -f $CygwinEnvironment.Registry.Path, $CygwinEnvironment.Registry.Name), 'Delete'))
+            {
+                Remove-ItemProperty -Path $registryItemPath -Name $CygwinEnvironment.Registry.Name;
+            }
+            else
+            {
+                Write-Host ('Remove: [{0}]' -f $CygwinEnvironment.Path);
+            }
+        }
     }
 }
