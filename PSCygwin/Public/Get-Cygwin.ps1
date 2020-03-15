@@ -26,6 +26,16 @@ function Get-Cygwin
 {
     [CmdletBinding()]
     param (
+        [Parameter()]
+        [string[]] $Path,
+
+        # List all installation - even if directory not exists.
+        [Parameter()]
+        [switch] $All,
+
+        # List installed packages.
+        [Parameter()]
+        [switch] $ListInstalled
     )
 
     begin
@@ -53,12 +63,23 @@ function Get-Cygwin
 
     process
     {
-        return [Cygwin.InstallInfo[]]($registry | Group-Object { $_.Value.TrimEnd('\\') -replace '^\\\?\?\\', '' } | Select-Object -Property @{l = 'Path'; e = { $_.Name } }, @{l = 'Registry'; e = { $_.Group } });
-        #return $locations;
-        # Get-Content V:\cyg\etc\setup\setup.rc
+        [Cygwin.InstallInfo[]] $installInfos = $registry | Group-Object { $_.Value.TrimEnd('\\') -replace '^\\\?\?\\', '' } | ForEach-Object {
+            [Cygwin.InstallInfo]::new($_.Name, $_.Group);
+        }
+
+        [Cygwin.InstallInfo[]] $outputInstallInfos = $installInfos;
+        if (-not($All))
+        {
+            $outputInstallInfos = $installInfos | Where-Object Exists;
+        }
     }
 
     end
     {
+        if ($ListInstalled)
+        {
+            return $outputInstallInfos | ForEach-Object { $_.GetInstalledPackages() };
+        }
+        return $outputInstallInfos;
     }
 }

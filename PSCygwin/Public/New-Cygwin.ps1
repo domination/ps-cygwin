@@ -24,14 +24,26 @@ function New-Cygwin
 {
     [CmdletBinding()]
     param (
-        # Parameter help description
         [Parameter()]
-        [uri] $SetupBaseUrl = 'https://cygwin.com/',
+        [string] $Path,
+
+        [Parameter()]
+        [string[]] $Packages,
+
+        [Parameter()]
+        [string] $LocalPackageRepository,
+
+        [Parameter()]
+        [uri[]] $MirrorSite,
 
         # Parameter help description
         [Parameter()]
         [ValidateSet('x86_64', 'x86')]
-        [string] $SetupArchitecture = 'x86_64',
+        [string] $Architecture = 'x86_64',
+
+        # Parameter help description
+        [Parameter()]
+        [uri] $SetupBaseUrl = 'https://cygwin.com/',
 
         # Parameter help description
         [Parameter()]
@@ -44,7 +56,7 @@ function New-Cygwin
 
     begin
     {
-        $SetupFileName = $SetupBaseFileName -f $SetupArchitecture;
+        $SetupFileName = $SetupBaseFileName -f $Architecture;
         $LocalSetupPath = Join-Path -Path $Script:PSModuleLocalTemp -ChildPath $SetupFileName;
         if (Test-Path -Path $LocalSetupPath -PathType Leaf)
         {
@@ -61,7 +73,36 @@ function New-Cygwin
 
     process
     {
-        . $LocalSetupPath '--help' | Out-String
+        # . $LocalSetupPath '--help' | Out-String
+
+        $parameters = @(
+            '--arch', $Architecture,
+            '--no-admin',
+            '--no-shortcuts',
+            '--quiet-mode'
+        );
+
+        if (-not([string]::IsNullOrEmpty($Path)))
+        {
+            $parameters += @('--root', $Path);
+        }
+
+        if (-not([string]::IsNullOrEmpty($LocalPackageRepository)))
+        {
+            $parameters += @('--local-package-dir', $LocalPackageRepository);
+        }
+
+        if ($MirrorSite.Count -gt 0)
+        {
+            $parameters += @('--only-site', '--site', ($MirrorSite -join ','));
+        }
+
+        if (($null -ne $Packages) -and ($Packages.Count -gt 0))
+        {
+            $parameters += @('--packages', ($Packages -join ','));
+        }
+
+        . $LocalSetupPath @parameters 2>&1 | Out-String
     }
 
     end
