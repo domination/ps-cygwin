@@ -29,7 +29,12 @@ function Get-Cygwin
     [OutputType('Cygwin.InstallInfo[]', ParameterSetName = 'Env')]
     [OutputType('Cygwin.Package[]', ParameterSetName = 'Packages')]
     param (
-        [Parameter()]
+        # Specifies a path to one or more locations. Wildcards are permitted.
+        [Parameter(Mandatory = $false, Position = 0, ParameterSetName = "Env",
+            ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true,
+            HelpMessage = "Path to one or more locations.")]
+        [ValidateNotNullOrEmpty()]
+        [SupportsWildcards()]
         [string[]] $Path,
 
         # List all installation - even if directory not exists.
@@ -62,18 +67,28 @@ function Get-Cygwin
                 }
             }
         }
+
+        [Cygwin.InstallInfo[]] $installInfos = $registry | Group-Object { $_.Value.TrimEnd('\\') -replace '^\\\?\?\\', '' } | ForEach-Object {
+            [Cygwin.InstallInfo]::new($_.Name, $_.Group);
+        }
     }
 
     process
     {
-        [Cygwin.InstallInfo[]] $installInfos = $registry | Group-Object { $_.Value.TrimEnd('\\') -replace '^\\\?\?\\', '' } | ForEach-Object {
-            [Cygwin.InstallInfo]::new($_.Name, $_.Group);
-        }
-
         [Cygwin.InstallInfo[]] $outputInstallInfos = $installInfos;
         if (-not($All))
         {
             $outputInstallInfos = $installInfos | Where-Object Exists;
+        }
+
+        if ($Path.Count -gt 0)
+        {
+            $_outputInstallInfos = @();
+            $Path | ForEach-Object {
+                $_path = $_.TrimEnd('\', '/');
+                $_outputInstallInfos += $outputInstallInfos | Where-Object Path -like $_path;
+            }
+            $outputInstallInfos = $_outputInstallInfos;
         }
     }
 
