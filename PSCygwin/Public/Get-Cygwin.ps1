@@ -24,7 +24,10 @@ using module ..\Private\Cygwin.psm1
 #>
 function Get-Cygwin
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Env')]
+
+    [OutputType('Cygwin.InstallInfo[]', ParameterSetName = 'Env')]
+    [OutputType('Cygwin.Package[]', ParameterSetName = 'Packages')]
     param (
         [Parameter()]
         [string[]] $Path,
@@ -34,7 +37,7 @@ function Get-Cygwin
         [switch] $All,
 
         # List installed packages.
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Packages')]
         [switch] $ListInstalled
     )
 
