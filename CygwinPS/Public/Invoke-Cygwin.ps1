@@ -7,6 +7,19 @@
     Example of how to use this cmdlet
 .EXAMPLE
     Another example of how to use this cmdlet
+
+@("ls -la", "pwd") | Invoke-Cygwin
+Invoke-Cygwin @("ls -la", "pwd")
+
+Invoke-Cygwin -Script "ls -la", "pwd"
+Invoke-Cygwin "ls -la", "pwd"
+"ls -la", "pwd" | Invoke-Cygwin
+
+Invoke-Cygwin -ScriptBlock { ls -la; pwd }
+Invoke-Cygwin { ls -la; pwd }
+{ ls -la; pwd } | Invoke-Cygwin
+
+
 .INPUTS
     Inputs to this cmdlet (if any)
 .OUTPUTS
@@ -22,11 +35,15 @@
 #>
 function Invoke-Cygwin
 {
-    [CmdletBinding(PositionalBinding = $true)]
+    [CmdletBinding(DefaultParameterSetName = "Lines", PositionalBinding = $true)]
     param (
         # Parameter help description
-        [Parameter(ValueFromPipeline = $true, ValueFromRemainingArguments = $true, Position = 0)]
-        [scriptblock] $Script,
+        [Parameter(ParameterSetName = "Lines", ValueFromPipeline = $true, ValueFromRemainingArguments = $true, Position = 0)]
+        [string[]] $Script,
+
+        # Parameter help description
+        [Parameter(ParameterSetName = "ScriptBlock", ValueFromPipeline = $true, ValueFromRemainingArguments = $false)]
+        [scriptblock] $ScriptBlock,
 
         [Parameter()]
         [Cygwin.InstallInfo] $CygwinEnvironment
@@ -41,24 +58,41 @@ function Invoke-Cygwin
             $selectedEnvironment = Get-Cygwin | Sort-Object Timestamp -Descending | Select-Object -First 1;
             Write-Verbose ('Selecting [{0}] as current environment.' -f $selectedEnvironment.Path);
         }
+
+        $executable = Join-Path -Path $selectedEnvironment.Path -ChildPath 'bin/bash.exe';
+        # . "$RootDir\bin\bash.exe" --login -c $Script;
+
+        [array]$arguments = @('-c', "export PATH=/bin:/usr/bin:`$PATH`n");
+
+        [array]$commandsToExecute = @();
     }
 
     process
     {
-        $executable = Join-Path -Path $selectedEnvironment.Path -ChildPath 'bin/bash.exe';
-        # . "$RootDir\bin\bash.exe" --login -c $Script;
-        . $executable @('-c', ("export PATH=/bin:/usr/bin:`$PATH`n{0}" -f $Script)) 2>&1 | Out-String
+        switch ($PSCmdlet.ParameterSetName)
+        {
+            'Lines'
+            {
+                $commandsToExecute += $Script;
+            }
+            'ScriptBlock'
+            {
+                $commandsToExecute += $ScriptBlock.ToString();
+            }
+        }
     }
 
     end
     {
+        $arguments[1] += ("{0}" -f ($commandsToExecute -join "`n"));
+        . $executable @arguments 2>&1
     }
 }
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvJFsEUF7UX8VXjBMm9kVojBR
-# FeigggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUEYr+w5yhuAGfXObf5UH0v8zU
+# MZ6gggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -79,11 +113,11 @@ function Invoke-Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBS617V6oqpJLkhhSCLMYTS20WNOEzANBgkqhkiG9w0B
-# AQEFAASCAQCd3YlwzpkvSRrJ1ut1y0buigj+3IS6fT6UARd9p0ZMAE8p+s9YInAS
-# fm9gVpwIrnxFD9LUpTDAohpqMA7npO6/+gdpJDvSyDRLhQzaar2xWQD30+oSO4aQ
-# J474ifu70bvcxXF9azu/aCWxcVoWs46ef7U2VMgx5wLOg3SGGKk9sNA0Vsfs7N1d
-# R7E6PAv3IVTPExmjqV30FYCpSNrYs8jpVKVPWfHh0320e1gghqpk5xBllSX+r0j5
-# WmwT1vLsZRlFAEIUwP1cZy27P3dMPCAaC0v80bqClswcHIv36tuxeMPmCnlsLw2L
-# Ek93PhkU/YOSIZ/oQaRtbnv3SKU/Lj5K
+# MCMGCSqGSIb3DQEJBDEWBBS5bFE/hQAIVlE9xsoBKa9Ve+wgDjANBgkqhkiG9w0B
+# AQEFAASCAQCdbjGtDyfMRjbanG5oPPNRySqf/kyHng64iKFG2yK1vHSG7cCqIf8v
+# 2Nt7yzFsVOFCeX4x15zQIdGsWdOuPfeemzdaviW0DkS+3YyANK65+RXwDrVnH9+n
+# 8cNapsKGnmFvIdYzm9R8Ph75Y2v9SCBpK2rIDAXuFELfG+9v7xZ/khwxhZE+8mUK
+# JHpo3/Vrjdl5CzhvuL8aCgYmqmgYcVdJ6z5PvPW2NM5yz7DlyH8JTUBX2gopSPIV
+# TATwvdzV+1fU7EHVJw01VN/45oFq5Yf8W0SYfZ/O4tCRO0lKTKWWxuwT3fBHaKNq
+# WRD9MeGuN7+YELloMcoLQi+dUdSFO+jj
 # SIG # End signature block

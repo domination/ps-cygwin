@@ -20,7 +20,7 @@ if (-not(Test-Path -Path $Script:PSModuleLocalTemp -PathType Container))
 $public = Get-ChildItem -Path (Join-Path -Path $PSModuleRoot -ChildPath 'Public') -Filter '*.ps1';
 
 $public | ForEach-Object {
-    Import-Module $_ -ErrorAction Stop
+    . $_.FullName -ErrorAction Stop
 }
 
 # Update-FormatData -Prepend (Join-Path $PSScriptRoot '*.ps1xml')
@@ -28,8 +28,8 @@ $public | ForEach-Object {
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUWFZQXTZn/kWwiWHtd2TZtqaU
-# ZDegggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUygWoQ3zrtnQMaM9cTgIUzq4k
+# lr6gggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -50,11 +50,11 @@ $public | ForEach-Object {
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBTxjktRNKDZ9qyV9Ag5qo1CDuEXUjANBgkqhkiG9w0B
-# AQEFAASCAQAuol5L7HcqbLVibhQlNCozh1KERjiLUypiTduyIHDv3aGbBSWdN1gN
-# WnJR3G+mlchiDQ18gIclLMaL18UqWFZSimIUBsx4+Ray6ikNhUxhygJW/WdpRVuf
-# KknjNTzruQJjAq0SLz9IOvzbIKQFIcBpsCkVMtPAbc4yVoJE9bfixmyVd2LyIxl9
-# OHHscXhHik6rA/BXyVeT2Tl4wu1TZSVPpbctTQGUy6+nQbncUuJK7sw2p9DKLxE9
-# L20bKxZHqfxAawJoKyjPRPK4tSu721ac5ezqAR2+7qsm5zVK0a643WBD+e4cexSY
-# mzN2C39A2CJrLrUv01HdE/3JLBxGOwVB
+# MCMGCSqGSIb3DQEJBDEWBBR6A704Zh0u++fOp1StHx7ud+S8GTANBgkqhkiG9w0B
+# AQEFAASCAQC4MVFfqg0imLBpfLyCGYSz7ZFlcScpWc7es2TsasB7LZ60fxyESq77
+# jLnKntQS9h/bfykpYh8xkYqq21PY8IhbwfT9WqNB0B0MkTIb976p3qlhiEQx4QEa
+# 37ktG7oeKTIpn5qB4MsRUSADUIYi4kYfmTF/D9s4rdR6c8Bb1MhRzs8/pp20Tn0t
+# Wxf1VM47DubRqH3ZGvNEyhzx5MSRR+GEWqpLJAiUmVfivBwE4qdxmcXCNVCJGi/r
+# NWzUMBu4ZAb10v6YIaF95mnrg2O0jWQQXLIa6Oelby669kPI/XqehUeShmLAoKgj
+# jRVLVBJOlLQ91g0LFfbx2GarpUKtHlQ1
 # SIG # End signature block

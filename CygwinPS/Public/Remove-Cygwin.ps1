@@ -42,7 +42,14 @@ function Remove-Cygwin
         {
             if ($PSCmdlet.ShouldProcess(('{0}' -f $CygwinEnvironment.Path), 'Remove'))
             {
-                Remove-Item -Path $CygwinEnvironment.Path -Recurse;
+                try
+                {
+                    Remove-Item -Path $CygwinEnvironment.Path -Recurse -ErrorAction Stop
+                }
+                catch
+                {
+                    Write-Error ('Cannot remove: [{0}]' -f $CygwinEnvironment.Path);
+                }
             }
             else
             {
@@ -50,17 +57,42 @@ function Remove-Cygwin
             }
         }
 
-        $registryItemPath = $CygwinEnvironment.Registry.Path -replace '^HKEY_CURRENT_USER', 'HKCU:' -replace '^HKEY_LOCAL_MACHINE', 'HKLM:';
-        $registryItem = Get-ItemProperty -Path $registryItemPath -Name $CygwinEnvironment.Registry.Name -ErrorAction SilentlyContinue;
-        if ($null -ne $registryItem)
+        if (-not($CygwinEnvironment.Exists))
         {
-            if ($PSCmdlet.ShouldProcess(('{0}\{1}' -f $CygwinEnvironment.Registry.Path, $CygwinEnvironment.Registry.Name), 'Delete'))
-            {
-                Remove-ItemProperty -Path $registryItemPath -Name $CygwinEnvironment.Registry.Name;
-            }
-            else
-            {
-                Write-Host ('Remove: [{0}]' -f $CygwinEnvironment.Path);
+            $CygwinEnvironment.Registry | ForEach-Object {
+                $reg = $_;
+                $registryItemPath = $reg.Path -replace '^HKEY_CURRENT_USER', 'HKCU:' -replace '^HKEY_LOCAL_MACHINE', 'HKLM:';
+                $registryItem = Get-ItemProperty -Path $registryItemPath -Name $reg.Name -ErrorAction SilentlyContinue;
+                if ($null -ne $registryItem)
+                {
+                    if ($PSCmdlet.ShouldProcess(('{0}\{1}' -f $reg.Path, $reg.Name), 'Delete'))
+                    {
+                        try
+                        {
+                            Remove-ItemProperty -Path $registryItemPath -Name $reg.Name -ErrorAction Stop;
+                        }
+                        catch
+                        {
+                            Write-Warning ('Cannot remove from registry: [{0}] {1}' -f $reg.Path, $reg.Name);
+                            if ($PSCmdlet.ShouldProcess("aa", "bb", "cc"))
+                            {
+                                try
+                                {
+                                    $scriptBlock = "Remove-ItemProperty -Path $registryItemPath -Name $($reg.Name) -ErrorAction Stop";
+                                    Start-Process -FilePath (Get-Process -id $pid).Path -ArgumentList ('-Command &{{ {0} }}' -f $scriptBlock) -Verb RunAs -Wait -ErrorAction Stop
+                                }
+                                catch
+                                {
+                                    Write-Error ($_.Exception.Message);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Write-Host ('Remove: [{0}]' -f $CygwinEnvironment.Path);
+                    }
+                }
             }
         }
     }
@@ -68,8 +100,8 @@ function Remove-Cygwin
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUi/Jy2Q8OOqZjIFgqpWne9Z1Q
-# GWagggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUxo4JdZ1CWLpm2xjoByO5KQXr
+# yoagggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -90,11 +122,11 @@ function Remove-Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBRqYQK7ItwxVYq4+ahpeNaH+wUvqjANBgkqhkiG9w0B
-# AQEFAASCAQDEKfHR88pjj8jSkS/A46/jKMqm/9TLZZq664WhAFRyMCzn9NS23MCM
-# cHWpGRQtqc0G13hRkHZj08alsF78GbkEwJFA/hXMHG0hI2Tvo5jQmPe3fZBQrW7L
-# EcwoN4h7SK5TfsIn7JtjDOWzYzS53zFFHojKM/c3hRw30V4YTPNRjJRLPuyrRG6v
-# EUHt1q6lLWZQuz9Hie/9BwKRB3iRVJrJxKbzb+Jh86RbgMq3NpWvZXFoXy3/490a
-# TZdRFX1KIE8ig/onAvoIAJGwTB/52C0f3WLH16c5iR+Nvv/bxf/JvdEoo8UrJ9Vb
-# +BwflLD13v29lY8SslZR1wOqQqUAkztc
+# MCMGCSqGSIb3DQEJBDEWBBTrIpGII0MFPmq0Gr8i3QKPYhjCrjANBgkqhkiG9w0B
+# AQEFAASCAQDIj4dSNfHYUDrBAbhNfuUg3N1ykQ3IRma0HFj7zcCclQ3LbEgYngM0
+# k/IGAGXPAsExQkAcLZ8an+Bs7D6FZ0Urz68b5bKuGG9JpqD3MSmbn7TwYRotO7Ky
+# wvOOBK1PTtlvhz+Go30XrHEGkQ9zddqtqcXyc3PwO2nRrr4jnqqYUKgYK2emt8+0
+# DyteNlob9oSPj+D7SFCI/tbp4vHp+Ny0HNvz8gg7Uk1UdZ5bITkdpA0Baqswso+b
+# 3ww2qCyW3PT939DfEOAfUK/YI+YoiqHejoLjIR/YtZWYpEAvGWwvRcycHsR+/R72
+# BjDcvrfGVQkUGwgPQjBqa5eJH7OxH82D
 # SIG # End signature block

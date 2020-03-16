@@ -49,7 +49,7 @@ function Cygwin
         # Path to cygwin environment.
         [string] $Path;
         # Timestamp from '/etc/setup/timestamp'
-        [ulong]$Timestamp;
+        [uint64]$Timestamp;
         # Collection of registry records about Path.
         [Registry[]] $Registry;
 
@@ -61,7 +61,7 @@ function Cygwin
 
             if ($this.Exists)
             {
-                $this.Timestamp = [ulong](Get-Content -Path (Join-Path -Path $this.Path -ChildPath 'etc/setup/timestamp') -ErrorAction SilentlyContinue);
+                $this.Timestamp = [uint64](Get-Content -Path (Join-Path -Path $this.Path -ChildPath 'etc/setup/timestamp') -ErrorAction SilentlyContinue);
                 $this.ReadSetupRc();
             }
         }
@@ -121,8 +121,8 @@ function Cygwin
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUb8AjDYjnicV2/SaA787XzkZp
-# CUWgggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU4BF7KJ05/74hCsy6q7ZKCOic
+# hbegggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -143,11 +143,11 @@ function Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBTaSvv/tn3QCMLQCL3cbaDtRjkbuTANBgkqhkiG9w0B
-# AQEFAASCAQCucC+0MqdhE7eZhqyYcU4T4zet8i6VJ/oTWIuAn1FBIa9s21RBhvsr
-# 4pBPleoKW8MEYlQ4wJLNy6Kna7z7FWP4Pd5KFARquHkn+X+NhQfzknpJ1mtMtI6i
-# zkNm+5mbpSfHQHoOR19eQuw7LAVxPDUtJ2tyiLTfD26JF4mqCPwuhwsxbokMhaOU
-# W/dqsZ7YIUOsccrKSytLQQhCtqTfK0tF4lM0t39HORUrm06I+sKa6TI9mKXS+8mK
-# ZWbuD0srKjwWhxEM6eX8g3tFBuwb42ZdE+luLFVCKMokKCxiLfKJEWZ+Dh/zGfwx
-# LP9MTG6xDPc16rFrS2fdCxPcNPujWx3p
+# MCMGCSqGSIb3DQEJBDEWBBTKcditB8HxhpwDjKEsCDuKsiLWyjANBgkqhkiG9w0B
+# AQEFAASCAQBe1VBAgppQWJEEfjmHqO7wWqdJL0Y1peTGNrplY3XXlGxRc4qla8T9
+# 3RvX6HP0AisDrl+maSs7KetpWY2/0unnZpYdryfA/wBQmsG3nKvKvmESi4+omZjp
+# LuB+U9sOSJycYa+nG68+VExPBqnKm536WXemEbBbZZDXeSIVHMPivhfRX9zDpYZc
+# Oq5lBN3APyu+yKVm1LivrLTzNGLESkZN8k6nCiQ0s9u+Msh9pJeyQT1/1fwXeAfu
+# iON8aWKBzHx//gttbkC3oHt0U+aMGgEsgUnKOvCJKMqAbv579WwyJBNT2CT3Gdtb
+# u1EQpg+z4iR0ahF4pN0pyCITrbCtvXT0
 # SIG # End signature block
