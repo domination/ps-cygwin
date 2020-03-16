@@ -81,7 +81,7 @@ function Get-Cygwin
             $outputInstallInfos = $installInfos | Where-Object Exists;
         }
 
-        if ($Path.Count -gt 0)
+        if (($null -ne $Path) -and ($Path.Count -gt 0))
         {
             $_outputInstallInfos = @();
             $Path | ForEach-Object {
@@ -104,8 +104,8 @@ function Get-Cygwin
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUFn94m2cCPJtHdogIKrxJKZtL
-# mJmgggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUNu3+g2TwWYDT8Rdh1f3B3pgA
+# C2egggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -126,11 +126,11 @@ function Get-Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBR70u/oP2pIVNqC4Jafcwb+nVBXgzANBgkqhkiG9w0B
-# AQEFAASCAQBvqAnbiD9MGK+cQT9tRpJt7w/MQ9Iy9GQ2LyDMiGtDRsoU0d7R5K3H
-# hGW7pMox88hZMy6g4kOfDsjJE/jPKURshqv/pG59SFsECpKviiCf0MUj5BQp+Cn+
-# qqHBeKszsvDf4J/oub0r2UYLgRut3KNPaWMMtYpAWtM9sOPYxR9SqqDIPNjxY98N
-# aC/tl6QzilN2x45TGLw9wZKx8NF3m5J0AHeHURLIQ79NdNsLYqh1FavefvoKNJ+h
-# /jqZr+/8yED96oNxDSUdMXaMdMDbGVKeJbhehTT+r/qt3w6OK9sbVf9F/orANXVq
-# ThVnsUlZs0pcfIny3W5ESk+XsRcxHHm7
+# MCMGCSqGSIb3DQEJBDEWBBQBokuaW8L5mVBq5CDKsIp7hFI2LTANBgkqhkiG9w0B
+# AQEFAASCAQBCsDV1vTRnQLa8AQ9mAcadKt3grJhFD+BlAbrRiivaRgJpp+gVYxo0
+# jzTWFOrDyXowWPdJukAV4vz8SKxkJMCRu+d8aHamFv37jezYygRj3eXpHo5+vRHQ
+# 6eaN9Lf6m/BZP5gFhDinqINleLXgGJVRT6hyo89pUh5I9IJDKyiDjU4rQgDGk6MA
+# EDQvgbJ/I1D+a8R8rZD5yM1I5ezfxUZ7ZzknQR/TiBqjTZYCst68sBjedstOHboU
+# uGY3UP51yRGxfMatkh28dQ2Ia2xjL+gqw+ylormWSmq2jvzamITt2ieuyKlxRj7w
+# jQJIsrSvZwsr16+N+NbVj0TbbqFkYEQj
 # SIG # End signature block

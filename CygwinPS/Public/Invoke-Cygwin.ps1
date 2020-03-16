@@ -22,10 +22,10 @@
 #>
 function Invoke-Cygwin
 {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $true)]
     param (
         # Parameter help description
-        [Parameter()]
+        [Parameter(ValueFromPipeline = $true, ValueFromRemainingArguments = $true, Position = 0)]
         [scriptblock] $Script,
 
         [Parameter()]
@@ -47,7 +47,7 @@ function Invoke-Cygwin
     {
         $executable = Join-Path -Path $selectedEnvironment.Path -ChildPath 'bin/bash.exe';
         # . "$RootDir\bin\bash.exe" --login -c $Script;
-        . $executable @('-c', $Script);
+        . $executable @('-c', ("export PATH=/bin:/usr/bin:`$PATH`n{0}" -f $Script)) 2>&1 | Out-String
     }
 
     end
@@ -57,8 +57,8 @@ function Invoke-Cygwin
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUjjpQjZ+xQx3NasDD9WVC+2xS
-# tpCgggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUvJFsEUF7UX8VXjBMm9kVojBR
+# FeigggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -79,11 +79,11 @@ function Invoke-Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBQPWAGV2Fu7ZO7aGg2NauWcxwtu8jANBgkqhkiG9w0B
-# AQEFAASCAQDEKG8yMCSAJJicmWPD8Y91DzP/DaPugz8a3mWO9m61Z9F4KiT/IxEQ
-# HjScnmhTMgiQ4LuWS8tjxE2SDayVMrd2wJXgAPdS8RXNvbGVLSl2uphru0G9XcdC
-# 4T6LBJg8c+PfKA1MNck+LSsgF0WQkMOthWibDgGf6SpjK5VnjVkzh4/h9UHK1wx+
-# XlKohewcdyKYxHZKt8bJ/Rn1qtn+BaMfqXWXI+Gq81lkOt9t9oEDvQqklcIBjuXW
-# TQ8pu/DIbfU+7sx0WrtmnN28BqRR9ZHhptQ5c6nIez7OMThpyCqJixKOJoMpG1ic
-# aaKp3XueT05rOBoTSpyoroX/DQQ17H+H
+# MCMGCSqGSIb3DQEJBDEWBBS617V6oqpJLkhhSCLMYTS20WNOEzANBgkqhkiG9w0B
+# AQEFAASCAQCd3YlwzpkvSRrJ1ut1y0buigj+3IS6fT6UARd9p0ZMAE8p+s9YInAS
+# fm9gVpwIrnxFD9LUpTDAohpqMA7npO6/+gdpJDvSyDRLhQzaar2xWQD30+oSO4aQ
+# J474ifu70bvcxXF9azu/aCWxcVoWs46ef7U2VMgx5wLOg3SGGKk9sNA0Vsfs7N1d
+# R7E6PAv3IVTPExmjqV30FYCpSNrYs8jpVKVPWfHh0320e1gghqpk5xBllSX+r0j5
+# WmwT1vLsZRlFAEIUwP1cZy27P3dMPCAaC0v80bqClswcHIv36tuxeMPmCnlsLw2L
+# Ek93PhkU/YOSIZ/oQaRtbnv3SKU/Lj5K
 # SIG # End signature block
