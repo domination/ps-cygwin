@@ -48,10 +48,18 @@ function Get-Cygwin
 
     begin
     {
+        $hklm = @();
         # HKEY_LOCAL_MACHINE\SOFTWARE\Cygwin
-        $hklm = Get-ChildItem -Path HKLM:\SOFTWARE\Cygwin -Recurse -ErrorAction SilentlyContinue;
+        if (Test-Path -Path HKLM:\SOFTWARE\Cygwin)
+        {
+            $hklm = Get-ChildItem -Path HKLM:\SOFTWARE\Cygwin -Recurse -ErrorAction SilentlyContinue;
+        }
+        $hkcu = @();
         # HKEY_CURRENT_USER\Software\Cygwin
-        $hkcu = Get-ChildItem -Path HKCU:\SOFTWARE\Cygwin -Recurse -ErrorAction SilentlyContinue;
+        if (Test-Path -Path HKCU:\SOFTWARE\Cygwin)
+        {
+            $hkcu = Get-ChildItem -Path HKCU:\SOFTWARE\Cygwin -Recurse -ErrorAction SilentlyContinue;
+        }
 
         # \Cygwin
         # - \Installations
@@ -104,8 +112,8 @@ function Get-Cygwin
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUNu3+g2TwWYDT8Rdh1f3B3pgA
-# C2egggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQURd872HrK7z1koXtd5mANCgUT
+# IuagggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -126,11 +134,11 @@ function Get-Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBQBokuaW8L5mVBq5CDKsIp7hFI2LTANBgkqhkiG9w0B
-# AQEFAASCAQBCsDV1vTRnQLa8AQ9mAcadKt3grJhFD+BlAbrRiivaRgJpp+gVYxo0
-# jzTWFOrDyXowWPdJukAV4vz8SKxkJMCRu+d8aHamFv37jezYygRj3eXpHo5+vRHQ
-# 6eaN9Lf6m/BZP5gFhDinqINleLXgGJVRT6hyo89pUh5I9IJDKyiDjU4rQgDGk6MA
-# EDQvgbJ/I1D+a8R8rZD5yM1I5ezfxUZ7ZzknQR/TiBqjTZYCst68sBjedstOHboU
-# uGY3UP51yRGxfMatkh28dQ2Ia2xjL+gqw+ylormWSmq2jvzamITt2ieuyKlxRj7w
-# jQJIsrSvZwsr16+N+NbVj0TbbqFkYEQj
+# MCMGCSqGSIb3DQEJBDEWBBRFU0lw71p6zR87sNTqa6wxX/KDdzANBgkqhkiG9w0B
+# AQEFAASCAQA3ToOmn7UU1LzXdujgZBJEuCe4cCaqlWK5UegoVuo9fl488TNN4ywb
+# yu+pDO/WebUbz9IRqveFCXfn7tWwnEOxFtzWwOK867aeto28/C6Its827sOTb8ak
+# 63pdHLt9BVAmzy8/8m7rUcC63LvNfV/qNli60AF45tJA+FYAhngjwNF15f1JH86C
+# IEyZhJ5oc26tVYHuZkBIyPDF8xgSR4zzuEHi7fVhH5lKyuvn3cfu/ekEuv5/rkPT
+# PQprNnhbfnAw+Hx3o+n1UE26hqB3pIg11vC2FKO9PGaVOTuBZ7yC6IVnZBCvpaFk
+# HrvLXBua9XnaiQakqyh84FRvko7pBhpX
 # SIG # End signature block

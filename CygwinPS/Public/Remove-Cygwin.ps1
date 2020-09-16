@@ -44,7 +44,7 @@ function Remove-Cygwin
             {
                 try
                 {
-                    Remove-Item -Path $CygwinEnvironment.Path -Recurse -ErrorAction Stop
+                    Remove-Item -Path $CygwinEnvironment.Path -Recurse -Force -ErrorAction Stop
                 }
                 catch
                 {
@@ -100,8 +100,8 @@ function Remove-Cygwin
 # SIG # Begin signature block
 # MIIFtAYJKoZIhvcNAQcCoIIFpTCCBaECAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUxo4JdZ1CWLpm2xjoByO5KQXr
-# yoagggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUz6cqFilHU79fh3KjHRIePKRG
+# QiygggM9MIIDOTCCAiWgAwIBAgIQ0IShyb7pW4dHi1pXwpsXLzAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0yMDAzMTUwOTEwNTBaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTCmRvbWlu
 # YXRpb24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDctlfJa2xVJBNF
@@ -122,11 +122,11 @@ function Remove-Cygwin
 # ZXJTaGVsbCBMb2NhbCBDZXJ0aWZpY2F0ZSBSb290AhDQhKHJvulbh0eLWlfCmxcv
 # MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3
 # DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEV
-# MCMGCSqGSIb3DQEJBDEWBBTrIpGII0MFPmq0Gr8i3QKPYhjCrjANBgkqhkiG9w0B
-# AQEFAASCAQDIj4dSNfHYUDrBAbhNfuUg3N1ykQ3IRma0HFj7zcCclQ3LbEgYngM0
-# k/IGAGXPAsExQkAcLZ8an+Bs7D6FZ0Urz68b5bKuGG9JpqD3MSmbn7TwYRotO7Ky
-# wvOOBK1PTtlvhz+Go30XrHEGkQ9zddqtqcXyc3PwO2nRrr4jnqqYUKgYK2emt8+0
-# DyteNlob9oSPj+D7SFCI/tbp4vHp+Ny0HNvz8gg7Uk1UdZ5bITkdpA0Baqswso+b
-# 3ww2qCyW3PT939DfEOAfUK/YI+YoiqHejoLjIR/YtZWYpEAvGWwvRcycHsR+/R72
-# BjDcvrfGVQkUGwgPQjBqa5eJH7OxH82D
+# MCMGCSqGSIb3DQEJBDEWBBQijvUmolG9zSNP7/ScDOShRuNiojANBgkqhkiG9w0B
+# AQEFAASCAQDFjG8eb4h09z/SL/vb24CkZGiJ0u5/P6dbAlhMwR6/Djb3UaOQTRKz
+# AzYjl1J7F6U1wGJHkJ7Pt2+uWA7c+7BrXwgD0pT9JjghF8Zo5he/OQMQ9+PgWK19
+# hjQsDv0jmFMeBFVyxsWYH2v7BJxzzysV/wKzVaBG05Eu9WByhlS+eeKYpb4c8QqU
+# tVwP86fSWbwXvorK17LXlustNQKiJz5s0BWiQqQkEATzEk995bAKuntb/QZVjL13
+# eRgEM88cIdzXE964JLJofRGu3/m97SPV9T+t8zhCdhuI+hkkjIpbD5jcvMybJrKQ
+# In3eyVXwT6Fm7sLRFj+SdXIIQ0mSYk1O
 # SIG # End signature block
